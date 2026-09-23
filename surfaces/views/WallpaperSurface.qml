@@ -68,7 +68,7 @@ Surface {
             color: "transparent"
 
             border.width: 5
-            border.color: Colors.accent 
+            border.color: Colors.foreground
 
 
             // x: carouselView.currentItem ? carouselView.currentItem.x : 0

@@ -1,11 +1,14 @@
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland
+import Quickshell.Widgets
+
 import QtQuick
 import QtQuick.Effects
 
 import qs.core
 import qs.components
+import qs.services
 
 import qs.surfaces
 import qs.surfaces.pill
@@ -91,6 +94,40 @@ Variants {
 
                 pill.forceActiveFocus()
             }
+
+            function onTheme() {
+                if(!controller.isFocusedMonitor()) {
+                    return
+                }
+
+                if(controller.currentSurface === SurfaceRegistery.SurfaceType.Theme) {
+                    controller.resetSurface()
+                    return
+                }
+
+                controller.toggleSurface(
+                    SurfaceRegistery.SurfaceType.Theme
+                )
+
+                pill.forceActiveFocus()
+            }
+
+            function onControl_center() {
+                if(!controller.isFocusedMonitor()) {
+                    return
+                }
+
+                if(controller.currentSurface === SurfaceRegistery.SurfaceType.ControlCenter) {
+                    controller.resetSurface()
+                    return
+                }
+
+                controller.toggleSurface(
+                    SurfaceRegistery.SurfaceType.ControlCenter
+                )
+
+                pill.forceActiveFocus()
+            }
         }
 
         FocusScope {
@@ -115,9 +152,9 @@ Variants {
 
                 radius: controller.state.expectedRadius
 
-                color: Colors.bg
+                color: Colors.background
             }
-
+            
             RectangularShadow {
                 anchors.fill: background
                 offset.x: 0
@@ -127,7 +164,7 @@ Variants {
                 spread: 2
                 opacity: 0.2
                 // color: Qt.darker(background.color, 1.6)
-                color: Colors.accent
+                color: Colors.surface
                 z: -1
             }
 
@@ -169,10 +206,6 @@ Variants {
             }
 
             Behavior on implicitWidth {
-                // NumberAnimation {
-                //     duration: 200
-                //     easing.type: Easing.OutExpo
-                // }
                 SpringAnimation {
                     spring: 20
                     damping: 0.8
@@ -180,26 +213,11 @@ Variants {
             }
 
             Behavior on implicitHeight {
-                // NumberAnimation {
-                //     duration: 600
-                //     easing.type: Easing.OutExpo
-                // }
                 SpringAnimation {
                     spring: 20
                     damping: 0.5
                 }
             }
-
-            // Behavior on radius {
-            //     // NumberAnimation {
-            //     //     duration: 800
-            //     //     easing.type: Easing.OutExpo
-            //     // }
-            //     SpringAnimation {
-            //         spring: 20
-            //         damping: 0.6
-            //     }
-            // }
 
            onActiveFocusChanged: {
                 // if(!activeFocus) {

@@ -25,6 +25,8 @@ QtObject {
         property real expandedRadius: 25
 
         property bool expanded: false
+        property bool allowExpandLock: false
+        property bool lockExpand: false 
         property bool supportsExpanded: false 
 
         property bool requiresKeyboardFocus: false
@@ -63,7 +65,9 @@ QtObject {
         state.expandedRadius = item.expandedRadius;
 
         state.supportsExpanded = item.supportsExpanded;
-        state.requiresKeyboardFocus = item.requiresKeyboardFocus
+        state.allowExpandLock = item.allowExpandLock;
+        state.lockExpand = item.lockExpand;
+        state.requiresKeyboardFocus = item.requiresKeyboardFocus;
 
         updateSize()
     }
@@ -86,11 +90,21 @@ QtObject {
             return
         }
 
+        if(state.allowExpandLock && state.lockExpand) {
+            state.expanded = true;
+            updateSize();
+            return;
+        }
+
         state.expanded = expanded
         updateSize()
     }
 
     function reset() {
+        if(state.lockExpand) {
+            return;
+        }
+
         state.expanded = false;
         updateSize()
     }

@@ -36,7 +36,7 @@ Surface {
             Icon {
                 name: "search"
                 size: Theme.font.icon + 4
-                iconColor: Colors.accent
+                iconColor: Colors.foreground
                 // iconColor: Colors.fg
             }
 
@@ -51,7 +51,7 @@ Surface {
                     width: parent.width 
                     anchors.verticalCenter: parent.verticalCenter
 
-                    color: Colors.fg
+                    color: Colors.foreground
 
                     font.family: Theme.font.family
                     font.pixelSize: Theme.font.lg
@@ -77,7 +77,7 @@ Surface {
                         anchors.fill: parent
 
                         text: "Search application e.g. Discord, Steam..."
-                        color: Colors.fg
+                        color: Colors.foreground
 
                         font.family: Theme.font.family
                         font.pixelSize: Theme.font.lg
@@ -134,7 +134,7 @@ Surface {
 
         radius: root.radius
 
-        color: Colors.bg 
+        color: Colors.background
 
         Behavior on implicitHeight {
             SpringAnimation {
@@ -169,7 +169,7 @@ Surface {
                 radius: 12
 
                 color: ListView.isCurrentItem
-                ? Qt.rgba(Colors.accentLighter.r, Colors.accentLighter.g, Colors.accentLighter.b, 0.3) 
+                ? Qt.rgba(Colors.foreground.r, Colors.foreground.g, Colors.foreground.b, 0.3) 
                 : "transparent"
 
                 RowLayout {
@@ -190,7 +190,7 @@ Surface {
 
                         text: modelData.name
 
-                        color: Colors.fg 
+                        color: Colors.foreground
 
                         font.family: Theme.font.family
                         font.pixelSize: Theme.font.md

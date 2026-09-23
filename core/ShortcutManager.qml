@@ -27,11 +27,23 @@ Singleton {
         }
     }
 
-    signal dashboardTriggered()
-    Shortcut {
-        sequence: "Super+Comma"
-        onActivated: {
-            root.dashboardTriggered()
+    signal theme()
+    GlobalShortcut {
+        name: "theme"
+        description: "Open theme selector"
+
+        onPressed: {
+            root.theme()
+        }
+    }
+
+    signal control_center()
+    GlobalShortcut {
+        name: "cc"
+        description: "Open Control Center"
+
+        onPressed: {
+            root.control_center()
         }
     }
 }

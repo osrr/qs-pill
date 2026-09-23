@@ -9,7 +9,7 @@ Surface {
 
 
     Text {
-        text: "something"
+        text: "Control Center"
 
         font.pixelSize: 18
     }

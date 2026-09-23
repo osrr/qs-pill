@@ -18,6 +18,8 @@ Item {
     property real expandedRadius: 25
 
     property bool supportsExpanded: false
+    property bool allowExpandLock: false
+    property bool lockExpand: false
     readonly property bool expanded: controller.state.expanded 
 
     property bool requiresKeyboardFocus: false

@@ -53,8 +53,8 @@ Singleton {
         }
 
         // nothing currently playing and we have no player at all yet -> pick any
-        if (!activePlayer && players.length > 1)
-            activePlayer = players[1];
+        if (!activePlayer && players.length > 2)
+            activePlayer = players[2];
     }
 
     Component.onCompleted: updateActivePlayer()

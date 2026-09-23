@@ -1,225 +1,176 @@
 import Quickshell
 import Quickshell.Io
 import Quickshell.Widgets
+import Quickshell.Services.SystemTray
+
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 
 import qs.core
 import qs.services
 import qs.components
+import qs.widgets
 
 Surface {
     id: root
 
-    expandedWidth: 512
-    expandedHeight: 128
+    expandedWidth: 612
+    expandedHeight: 228 
 
     supportsExpanded: true
+    allowExpandLock: true
 
-    Text {
-        id: clock 
-        // anchors.centerIn: root.expanded ? undefined : parent
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: root.expanded && -(date.height / 2)
+    ColumnLayout {
+        id: layout
 
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.horizontalCenterOffset: root.expanded ? Theme.m.xl * 4 : 0
+        anchors.fill: parent
 
-        // anchors.right: root.expanded ? parent.right : undefined
+        anchors.topMargin: 2
+        anchors.bottomMargin: root.expanded ? 8 : 2
 
-        text: ClockService.time 
+        anchors.rightMargin: Theme.m.lg / 2
+        anchors.leftMargin: Theme.m.lg / 2
 
-        color: Colors.fg
+        RowLayout {
+            Layout.alignment: Qt.AlignTop
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            // Layout.maximumHeight: 158
 
-        font.family: Theme.font.family
-        font.weight: Theme.font.bold
-        font.pixelSize: root.expanded ? Theme.font.xxlg + 16 : Theme.font.xlg 
+            spacing: Theme.spacing.md
+            layoutDirection: Qt.RightToLeft
 
-        Behavior on font.pixelSize {
-            NumberAnimation {
-                duration: 200
-                easing.type: Easing.OutExpo
+            Item {
+                Layout.maximumWidth: clock.width + Theme.m.lg
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.alignment: root.expanded ? Qt.AlignRight : Qt.AlignCenter
+
+                Text {
+                    id: clock 
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.verticalCenterOffset: root.expanded ? -(date.height / 2) : 0
+
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    // anchors.horizontalCenterOffset: root.expanded ? Theme.m.xl * 4 : 0
+
+                    text: ClockService.time 
+
+                    color: Colors.white
+                    // color: Colors.fg 
+
+                    font.family: Theme.font.family
+                    font.weight: Theme.font.bold
+                    font.pixelSize: root.expanded ? Theme.font.xxlg + 16 : Theme.font.xlg 
+
+                    Behavior on font.pixelSize {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutExpo
+                        }
+                    }
+                }
+
+                Text {
+                    id: date
+
+                    anchors.top: clock.bottom
+                    anchors.horizontalCenter: clock.horizontalCenter
+
+                    text: "date not working"
+
+                    color: Colors.foregroundAlt
+
+                    font.family: Theme.font.family
+                    font.weight: Theme.font.semibold
+                    font.pixelSize: Theme.font.xlg
+
+                    visible: root.expanded
+                }
+
+                Process {
+                    command: ["date", "+%a-%d %b %Y"]
+                    running: root.expanded
+                    stdout: StdioCollector {
+                        onStreamFinished: date.text = this.text
+                    }
+                }
             }
-        }
 
-        Behavior on anchors.horizontalCenterOffset {
-            SpringAnimation {
-                spring: 20
-                damping: 0.8
+            // Media Player
+
+            Item {
+                visible: root.expanded
+                Layout.alignment: Qt.AlignVCenter 
+                Layout.fillWidth: true
+                Layout.preferredHeight: parent.height - Theme.m.lg
+
+                MediaPlayer {
+                    radius: controller.state.expectedRadius - 5
+                }
             }
+
+            // media player
+
         }
-    }
-
-    Text {
-        id: date
-
-        anchors.top: clock.bottom
-        anchors.horizontalCenter: clock.horizontalCenter
-
-        text: "wed 19 2026"
-
-        color: Colors.fgDarker
-
-        font.family: Theme.font.family
-        font.weight: Theme.font.semibold
-        font.pixelSize: Theme.font.xlg
-
-        visible: root.expanded
-    }
-
-    Process {
-        command: ["date", "+%a-%d %b %Y"]
-        running: root.expanded
-        stdout: StdioCollector {
-            onStreamFinished: date.text = this.text
-        }
-    }
-
-    RowLayout {
-        visible: root.expanded
-
-        anchors.left: parent.left
-        anchors.leftMargin: Theme.m.lg
-        anchors.verticalCenter: parent.verticalCenter
-
-        implicitWidth: 200
-        implicitHeight: 300
-
-        spacing: Theme.spacing.sm
 
         Rectangle {
-            id: mediaImg
-            Layout.preferredWidth: 75
-            Layout.preferredHeight: 75
-            radius: 10
+            id: separator
 
-            ClippingWrapperRectangle {
-                id: imgWrapper
-                anchors.fill: parent
-                radius: 5 
+            Layout.fillWidth: true
+            Layout.leftMargin: Theme.m.lg
+            Layout.rightMargin: Theme.m.lg
 
-                Image {
-                    id: image
-                    anchors.fill: parent
-                    source: MprisService.artUrl 
-                    fillMode: Image.PreserveAspectCrop
-                }
-            }
+            Layout.fillHeight: true
+            Layout.minimumHeight: 1
+            Layout.maximumHeight: 1
+
+
+
+            visible: root.expanded
+            color: Colors.backgroundAlt
         }
 
-        ColumnLayout {
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 175 
-            Layout.preferredHeight: mediaImg.height 
 
-            ColumnLayout {
-                Layout.alignment: Qt.AlignTop
-                Layout.preferredWidth: parent.width
-                Layout.fillHeight: true
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.minimumHeight: 22
+            Layout.maximumHeight: 22
 
-                Text {
-                    Layout.fillWidth: true
+            Layout.leftMargin: Theme.m.lg
+            Layout.rightMargin: Theme.m.lg
 
-                    text: MprisService.title
-                    color: Colors.fg 
+            color: Qt.rgba(Colors.backgroundAlt.r, Colors.backgroundAlt.g, Colors.backgroundAlt.b, 0.0) 
+            radius: 10
 
-                    font.family: Theme.font.family
-                    font.weight: Theme.font.semibold
-                    font.pixelSize: Theme.font.lg
-
-                    elide: Text.ElideRight
-                }
-
-                Text {
-                    Layout.fillWidth: true
-
-                    text: MprisService.artist
-                    color: Colors.fgDarker
-
-                    font.family: Theme.font.family
-                    font.weight: Theme.font.semibold
-                    font.pixelSize: Theme.font.md
-
-                    elide: Text.ElideRight
-                }
-            }
+            visible: root.expanded
 
             RowLayout {
-                Layout.alignment: Qt.AlignBottom
-                Layout.fillWidth: true
-                Layout.preferredHeight: 16 
+                id: tray
+                anchors.centerIn: parent
+                spacing: 4
 
-                spacing: Theme.spacing.md
+                Repeater {
+                    model: SystemTray.items
 
-                // Rectangle {
-                //     Layout.fillWidth: true 
-                //     Layout.fillHeight: true 
-                //
-                //     color: "red"
-                // }
-
-                Icon {
-                    // Layout.preferredWidth: 16
-                    // Layout.preferredHeight: 16
-
-                    name: "skip_prev"
-                    size: Theme.font.icon * 1.25
-
-                    iconColor: m_prev.hovered ? Colors.accent : Colors.fg
-
-                    HoverHandler {
-                        id: m_prev 
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton
-                        onClicked: { 
-                            MprisService.previous() 
-                        }
+                    delegate: TrayItem {
+                        Layout.alignment: Qt.AlignVCenter
                     }
                 }
-
-                Icon {
-                    name: MprisService.isPlaying ? "pause" : "play_arrow"
-                    size: Theme.font.icon * 1.25
-
-                    iconColor: m_toggle.hovered ? Colors.accent : Colors.fg
-
-                    HoverHandler {
-                        id: m_toggle 
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton
-                        onClicked: { 
-                            MprisService.togglePlaying() 
-                            console.log("Should stop playing")
-                        }
-                    }
-                }
-
-                Icon {
-                    name: "skip_next"
-                    size: Theme.font.icon * 1.25
-
-                    iconColor: m_next.hovered ? Colors.accent : Colors.fg
-
-                    HoverHandler {
-                        id: m_next 
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton
-                        onClicked: {
-                            MprisService.next()
-                        }
-                    }
-                }
-
             }
         }
     }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            if(root.allowExpandLock) {
+                root.controller.state.lockExpand = !root.controller.state.lockExpand
+            }
+        }
+        z: -1
+    }
+
 }

@@ -11,24 +11,38 @@ Item {
     property real size: 16
     property color iconColor: "#fff" 
 
+    property bool isSvg: true;
+
     implicitWidth: size 
     implicitHeight: size 
 
     IconImage {
         id: icon
 
-        source: Qt.resolvedUrl("../assets/" + name + ".svg")
+        source: isSvg ? Qt.resolvedUrl("../assets/" + name + ".svg") : name
 
 
         anchors.fill: parent
         anchors.centerIn: parent
+        visible: false
+        layer.enabled: true
+    }
+
+    Rectangle {
+        id: colorSource
+        anchors.fill: parent
+        color: root.iconColor
+        visible: false
     }
 
     MultiEffect {
-        source: icon
-        anchors.fill: icon
-        colorization: 1.0
-        colorizationColor: root.iconColor 
+        anchors.fill: parent 
+        source: colorSource 
+
+        maskEnabled: true
+        maskSource: icon
+        maskThresholdMin: 0.5
+        maskSpreadAtMin: 0.8
     }
 }
 
