@@ -66,7 +66,7 @@ Rectangle {
             //     Colors.accent.b,
             //     0.45  // higher = more guaranteed contrast, lower = more art visible
             // )
-            color: "#037b68"
+            color: Colors.accent 
             opacity: 0.4
         }
     }
